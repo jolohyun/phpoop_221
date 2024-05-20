@@ -8,16 +8,13 @@ if (isset($_POST['login'])){
   $result = $con->check($username, $password);
 
 if ($result) {
-  if ($result['user'] == $_POST['user'] && $result['pass'] == $_POST['pass']) {
-      //$_SESSION['user'] = $result['user'];
+      $_SESSION['user'] = $result['user'];
       header('location: index2.php');
   } else {
       echo 'error';
   }
-} else {  
-  echo 'error';
 }
-}
+
 
 
 ?>
@@ -58,7 +55,7 @@ if ($result) {
     <div class="container">
       <div class="row gx-1">
         <div class="col"> <input type="submit" value="Login" class="btn btn-primary btn-block" name = 'login'></div>
-        <div class="col"> <a href="multisave.php" class = "btn btn-danger btn-block">Signup</a></div>
+        <div class="col"> <a href="register.php" class = "btn btn-danger btn-block">Signup</a></div>
       </div>
     </div>
   </form>

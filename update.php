@@ -51,7 +51,7 @@ if($password == $confirm){
  
   <style>
     body{
-      background-color: grey;
+      background-color: #F5347F;
     }
     .custom-container{
         width: 800px;
@@ -69,7 +69,7 @@ if($password == $confirm){
   <form method ="post">
     <!-- Personal Information -->
     <div class="card mt-4">
-      <div class="card-header bg-dark text-white">Personal Information</div>
+      <div class="card-header bg-danger text-white">Personal Information</div>
       <div class="card-body">
         <div class="form-row">
           <div class="form-group col-md-6 col-sm-12">
@@ -114,7 +114,7 @@ if($password == $confirm){
    
     <!-- Address Information -->
     <div class="card mt-4">
-      <div class="card-header bg-dark text-white">Address Information</div>
+      <div class="card-header bg-danger text-white">Address Information</div>
       <div class="card-body">
         <div class="form-group">
           <label for="street">Street:</label>
@@ -143,7 +143,7 @@ if($password == $confirm){
     <div class="row justify-content-center gx-0">
         <div class="col-lg-3 col-md-4">
            <input type="hidden" name="id" value ="<?php echo $rows['user_id'];?>">
-            <input type="submit" name="update" class="btn btn-outline-light btn-block mt-4" value="Update">
+            <input type="submit" name="update" class="btn btn-outline-dark btn-block mt-4" value="Update">
         </div>
         <div class="col-lg-3 col-md-4">
             <a class="btn btn-outline-light btn-block mt-4" href="login.php">Go Back</a>

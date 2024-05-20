@@ -6,9 +6,23 @@ class database {
     }
    
     function check($username, $password) {
+        // Open database connection
         $con = $this->opencon();
-        $query = "SELECT * FROM users WHERE user='".$username."'&&pass='".$password."'";
-        return $con->query($query)->fetch();
+    
+        // Prepare the SQL query
+        $stmt = $con->prepare("SELECT * FROM users WHERE user = ?");
+        $stmt->execute([$username]);
+    
+        // Fetch the user data as an associative array
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        // If a user is found, verify the password
+        if ($user && password_verify($password, $user['pass'])) {
+            return $user;
+        }
+    
+        // If no user is found or password is incorrect, return false
+        return false;
     }
     function signup($username, $password,$firstname, $lastname,$birthday, $sex) {
         $con = $this->opencon();
@@ -24,22 +38,15 @@ class database {
         }
 
         //insert the new username and passsword into the database
-        return $con->prepare("INSERT INTO users(user,pass,firstname,lastname,birthday,sex)VALUES (?, ?, ?, ?, ?, ?)")->execute([$username, $password,$firstname, $lastname, $birthday, $sex]);
+        return $con->prepare("INSERT INTO users(user,pass,firstname,lastname,birthday,sex)VALUES (?, ?, ?, ?, ?, ?,)")->execute([$username, $password,$firstname, $lastname, $birthday, $sex,]);
     }
-    function signupUser($username, $password,$firstname, $lastname, $birthday, $sex) {
+    function signupUser($firstname, $lastname, $birthday, $sex, $email, $username, $password, $profilePicture)
+    {
         $con = $this->opencon();
-       
-        $query = $con->prepare("SELECT user FROM users WHERE user = ?");
-        $query->execute([$username]);
-        $existingUser =  $query->fetch();
- 
-        if($existingUser){
-            return false;
-        }
-        $con->prepare("INSERT INTO users (user,pass,firstname,lastname,birthday,sex) VALUES (?,?,?,?,?,?)")
-                ->execute([$username, $password, $firstname, $lastname, $birthday, $sex]);
+        // Save user data along with profile picture path to the database
+        $con->prepare("INSERT INTO users (firstname, lastname, birthday,sex,email, user, pass, user_profile_picture) VALUES (?,?,?,?,?,?,?,?)")->execute([$firstname, $lastname, $birthday, $sex, $email, $username, $password, $profilePicture]);
         return $con->lastInsertId();
-    }
+        }
    
     function insertAddress($user_id, $street, $barangay, $city, $province) {
         $con = $this->opencon();
@@ -56,6 +63,7 @@ class database {
         users.birthday,
         users.sex,
         users.user,
+        users.user_profile_picture,
         CONCAT(
             user_address.user_street, ', ', user_address.user_barangay, ', ', user_address.user_city, ' ', user_address.user_province
         ) AS Address
@@ -90,6 +98,7 @@ class database {
         users.sex,
         users.user,
         users.pass,
+        users.user_profile_picture,
         user_address.user_street,
         user_address.user_barangay,
         user_address.user_city,
