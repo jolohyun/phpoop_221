@@ -1,14 +1,14 @@
 <?php
 require_once('classes/classes/database.php');
 $con = new database();
-
+session_start();
 if (isset($_POST['login'])){
   $username = $_POST['user'];
   $password = $_POST['pass'];
   $result = $con->check($username, $password);
 
 if ($result) {
-      $_SESSION['user'] = $result['user'];
+      $_SESSION['username'] = $result['user'];
       header('location: index2.php');
   } else {
       echo 'error';

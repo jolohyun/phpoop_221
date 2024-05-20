@@ -2,6 +2,10 @@
 require_once('classes/classes/database.php');
 $con = new database();
 
+session_start();
+  if (empty($_SESSION['username'])) {
+     header('location:login.php');
+  }
 if(isset($_POST['delete'])){
   $id = $_POST['id'];
   if($con->delete($id)){

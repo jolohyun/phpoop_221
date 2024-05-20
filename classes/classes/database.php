@@ -24,6 +24,7 @@ class database {
         // If no user is found or password is incorrect, return false
         return false;
     }
+
     function signup($username, $password,$firstname, $lastname,$birthday, $sex) {
         $con = $this->opencon();
 
