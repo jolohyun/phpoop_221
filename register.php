@@ -120,9 +120,10 @@ if (isset($_POST['multisave'])) {
     .form-step-active {
       display: block;
     }
-  </style>
+  </style>  
 </head>
 <body>
+<?php include("include/navbar.php");?>
 <div class="container custom-container rounded-3 shadow my-5 p-3 px-5">
   <h3 class="text-center mt-4">Registration Form</h3>
   <form id="registration-form" method="post" action="" enctype="multipart/form-data" novalidate>
@@ -196,8 +197,6 @@ if (isset($_POST['multisave'])) {
                     <option selected disabled value="">Select Sex</option>
                     <option>Male</option>
                     <option>Female</option>
-                    <option>Bading</option>
-                    <option>Tomboy</option>
                   </select>
                   <div class="valid-feedback">Looks good.</div>
                   <div class="invalid-feedback">Please select a sex.</div>

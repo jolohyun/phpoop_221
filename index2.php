@@ -14,6 +14,29 @@ if(isset($_POST['delete'])){
     echo "Something went wrong.";
   }
 }
+// For Chart
+$data = $con->getusercount();
+
+// Check if the data is an associative array and contains the key 'male'
+if (isset($data['male_count']) or isset( $dataf['female_count'])) {
+    $male = $data['male_count'];
+    $female = $data['female_count'];
+} else {
+    // Handle the case where 'male' key is not found in the returned data
+    $male = 0; // or set an appropriate default value or handle the error
+    $female = 0;
+}
+
+// Create the dataPoints array
+$dataPoints = array( 
+    array("y" => $male, "label" => "Male" ),
+    array("y" => $female, "label" => "Female" ),
+);
+
+$datapoints = array(
+	array("label"=> "Male", "y"=> $male),
+	array("label"=> "Female", "y"=> $female),
+);
 ?>
 
 
@@ -82,13 +105,19 @@ if(isset($_POST['delete'])){
 
           <form action = "update.php" method = "post" style = "display: inline">
           <input type ="hidden" name = "id" value ="<?php echo $rows['user_id'];?>">
-          <button type ="submit" class="btn btn-primary btn-sm">Edit</button>
+          <button type="submit" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                        </button>
+        
 
         </form>
         <!-- Delete button -->
         <form method="POST" style="display: inline;">
             <input type="hidden" name="id" value ="<?php echo $rows['user_id'];?>">
-            <input type="submit" name="delete" class="btn btn-danger btn-sm" value="Delete" onclick="return confirm('Are you sure you want to delete this user?')">
+            <button type="submit" name="delete" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+          
         </form>
           </td>
         </tr>
@@ -136,11 +165,61 @@ if(isset($_POST['delete'])){
             }
             ?>
         </div>
+        
     </div>
 
+    
 </div>
 </div>
+ <!-- HTML declaration for bar graph -->
+ <div id="chartContainer" style="height: 370px; width: 100%;"></div>
 
+<!-- HTML declaration for pie chart -->
+<div id="pie" style="height: 370px; width: 100%;"></div>
+
+</div>
+<!-- Combine both chart scripts inside one window.onload -->
+<script>
+window.onload = function() {
+var userChart = new CanvasJS.Chart("chartContainer", {
+  animationEnabled: true,
+  theme: "light2",
+  title: {
+    text: "Numbers of Users based on Sex"
+  },
+  axisY: {
+    title: "Number of Users per Sex"
+  },
+  data: [{
+    type: "column",
+    yValueFormatString: "",
+    dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
+  }]
+});
+userChart.render();
+
+var expenseChart = new CanvasJS.Chart("pie", {
+  animationEnabled: true,
+  exportEnabled: true,
+  title: {
+    text: "Number of Users per Sex"
+  },
+  subtitles: [{
+    text: "Total"
+  }],
+  data: [{
+    type: "pie",
+    showInLegend: "true",
+    legendText: "{label}",
+    indexLabelFontSize: 16,
+    indexLabel: "{label} - #percent%",
+    yValueFormatString: "#,##0",
+    dataPoints: <?php echo json_encode($datapoints, JSON_NUMERIC_CHECK); ?>
+  }]
+});
+expenseChart.render();
+}
+</script>
 <!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -148,6 +227,8 @@ if(isset($_POST['delete'])){
 <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 <!-- Bootsrap JS na nagpapagana ng danger alert natin -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- For Charts -->
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
 
 </body>
 

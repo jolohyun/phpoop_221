@@ -130,5 +130,11 @@ class database {
             return false;
         }
     }
+    function getusercount()
+{
+    $con = $this->opencon();
+    return $con->query("SELECT SUM(CASE WHEN sex = 'Male' THEN 1 ELSE 0 END) AS male_count,
+    SUM(CASE WHEN sex = 'Female' THEN 1 ELSE 0 END) AS female_count FROM users;")->fetch();
+}
 }
  
