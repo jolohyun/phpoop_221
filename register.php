@@ -56,7 +56,7 @@ if (isset($_POST['multisave'])) {
     }
 
     // Check file size
-    if ($_FILES["profile_picture"]["size"] > 500000) {
+    if ($_FILES["profile_picture"]["size"] > 5000000) {
         echo "Sorry, your file is too large.";
         $uploadOk = 0;
     }
@@ -140,7 +140,8 @@ if (isset($_POST['multisave'])) {
         </div>
           <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" name="email" placeholder="Enter email" required>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+            <div id="emailFeedback" class="invalid-feedback"></div> <!-- New feedback div -->
             <div class="valid-feedback">Looks good!</div>
             <div class="invalid-feedback">Please enter a valid email.</div>
           </div>
@@ -195,6 +196,8 @@ if (isset($_POST['multisave'])) {
                     <option selected disabled value="">Select Sex</option>
                     <option>Male</option>
                     <option>Female</option>
+                    <option>Bading</option>
+                    <option>Tomboy</option>
                   </select>
                   <div class="valid-feedback">Looks good.</div>
                   <div class="invalid-feedback">Please select a sex.</div>
@@ -293,6 +296,40 @@ $(document).ready(function(){
             $('#username').removeClass('is-valid is-invalid');
             $('#usernameFeedback').text('');
             $('#nextButton').prop('disabled', false); // Enable the Next button if username is empty
+        }
+    });
+});
+
+</script>
+
+<!-- Live Checking -->
+
+<script>
+$(document).ready(function(){
+    $('#email').on('input', function(){
+        var email = $(this).val();
+        if(email.length > 0) {
+            $.ajax({
+                url: 'check_email.php',
+                method: 'POST',
+                data: {email: email},
+                dataType: 'json',
+                success: function(response) {
+                    if(response.exists) {
+                        $('#email').removeClass('is-valid').addClass('is-invalid');
+                        $('#emailFeedback').text('Email is already taken.');
+                        $('#nextButton').prop('disabled', true); // Disable the Next button
+                    } else {
+                        $('#email').removeClass('is-invalid').addClass('is-valid');
+                        $('#emailFeedback').text('');
+                        $('#nextButton').prop('disabled', false); // Enable the Next button
+                    }
+                }
+            });
+        } else {
+            $('#email').removeClass('is-valid is-invalid');
+            $('#emailFeedback').text('');
+            $('#nextButton').prop('disabled', false); // Enable the Next button if Email is empty
         }
     });
 });
