@@ -167,5 +167,49 @@ function updatePassword($userId, $hashedPassword) {
     $query = $con->prepare("UPDATE users SET pass = ? WHERE user_id = ?");
     return $query->execute([$hashedPassword, $userId]);
 }
+function updateUserProfilePicture($userID, $profilePicturePath) {
+    try {
+        $con = $this->opencon();
+        $con->beginTransaction();
+        $query = $con->prepare("UPDATE users SET user_profile_picture = ? WHERE user_id = ?");
+        $query->execute([$profilePicturePath, $userID]);
+        // Update successful
+        $con->commit();
+        return true;
+    } catch (PDOException $e) {
+        // Handle the exception (e.g., log error, return false, etc.)
+         $con->rollBack();
+        return false; // Update failed
+    }
+     }
+     function fetchAvailableCourses($userId) {
+        try {
+            $con = $this->opencon();
+            $query = $con->prepare("
+                SELECT c.course_id, c.course_name, c.course_description,
+                CASE WHEN e.course_id IS NOT NULL THEN 'Enrolled' ELSE 'Not Enrolled' END AS enrolled_status
+                FROM courses c
+                LEFT JOIN enrollments e ON c.course_id = e.course_id AND e.user_id = ?
+                WHERE e.course_id IS NULL OR e.user_id != ?
+            ");
+            $query->execute([$userId, $userId]);
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return false, etc.)
+            return [];
+        }
+    }
+    
+     function fetchSelectedCourses($selectedCourseIds) {
+        try {
+            $con = $this->opencon();
+            $placeholders = str_repeat('?,', count($selectedCourseIds) - 1) . '?';
+            $query = $con->prepare("SELECT course_id, course_name, course_description FROM courses WHERE course_id IN ($placeholders)");
+            $query->execute($selectedCourseIds);
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return false, etc.)
+            return [];
+        }
+    }
 }
- 

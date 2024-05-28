@@ -6,7 +6,7 @@ session_start();
 // If the user is already logged in, check their account type and redirect accordingly
 if (isset($_SESSION['username']) && isset($_SESSION['account_type'])) {
   if ($_SESSION['account_type'] == 0) {
-    header('location:index.php');
+    header('location:index2.php');
   } else if ($_SESSION['account_type'] == 1) {
     header('location:user_account.php');
   }
@@ -27,7 +27,7 @@ if (isset($_POST['login'])) {
       $_SESSION['profilepicture'] = $result['user_profile_picture'];
       // Redirect based on account type
       if ($result['account_type'] == 0) {
-        header('location:index.php');
+        header('location:index2.php');
       } else if ($result['account_type'] == 1) {
         header('location:user_account.php');
       }
